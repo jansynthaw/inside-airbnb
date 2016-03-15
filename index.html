@@ -1,9 +1,22 @@
 <!DOCTYPE html>
 <html>
-    <head>
+    <head>    
+      <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+      <link rel="stylesheet"
+         href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css"         />
+      <script src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js">              </script>
+ 
         <style>
+           
+            #map {
+                height: 500px;
+                width: 100%;
+            }
             h1 {
                 font-size: 55px;
+            }
+            p {
+                font-size: 15px;
             }
             .number{
                 font-style: italic;
@@ -18,7 +31,6 @@
                 color: #FF555A;
             }
             a {
-               font-size: 20px;
                 color: #9065B3;
             }        
             .info-box{
@@ -30,10 +42,31 @@
                 padding-bottom: 5px;
                 padding-top: 1px;
             }
+        </style>     
+        
+        <script>
+              var dataLayer;
+      $(document).ready(function () {
+        cartodb.createVis('map', 'https://thawj529.cartodb.com/api/v2/viz/a3733520-d987-11e5-8141-0e5db1731f59/viz.json')
+          .done(function (vis, layers) {
+            dataLayer = layers[1].getSubLayer(0);
+          });
+
+        $('.neighborhood-picker').change(function () {
+            var neighborhood = $(this).val();
+            var sql;
+            if (neighborhood === 'all') {
+             sql = "SELECT * FROM listings";
+            }
+            else {
+             sql = "SELECT * FROM listings WHERE neighborhood = '" + neighborhood + "'";
+            }
+          dataLayer.setSQL(sql);
+        });
+      });
+        </script>
     
-        </style>        
     </head>
-    
     <body>
         <div id="page-wrap">
          <table border="0">
@@ -65,13 +98,12 @@
         Neighborhood:
         </p>
         <form>
-    <select name="neighborhood">
-        <option selected>Choose a neighborhood</option>
-        <option>Crown Heights/Fort Greene</option>
-        <option>East Midtown </option>
-        <option>West Village</option>
+    <select class="neighborhood-picker" style= "background-color: cyan; border-color: cyan">
+        <option value="all">Choose a neighborhood</option>
+        <option value="Crown Heights">Crown Heights</option>
+        <option value="Midtown">Midtown Manhattan</option>
+        <option value="West Village">West Village</option>
     </select>
-    <input type="submit">
 </form>
         <p>
         Total Number of Rooms Available
@@ -81,12 +113,9 @@
                 <li>private room: <div class="number">15,576</div></li>
                 <li>shared room: <div class="number">1,114</div></li>
         </ul>
-        </div>
-        
-            <br/>
-        <iframe width="100%" height="520" frameborder="0" src="https://thawj529.cartodb.com/viz/a3733520-d987-11e5-8141-0e5db1731f59/embed_map" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>
-        
-    </div>        
+            </div>
+            <br>
+        <div id="map"></div>
+               
     </body>
-    
 </html>
