@@ -46,13 +46,13 @@
         
         <script>
               var dataLayer;
-      $(document).ready(function () {
+    $(document).ready(function () {
         cartodb.createVis('map', 'https://thawj529.cartodb.com/api/v2/viz/a3733520-d987-11e5-8141-0e5db1731f59/viz.json')
           .done(function (vis, layers) {
             dataLayer = layers[1].getSubLayer(0);
           });
 
-        $('.neighborhood-picker').change(function () {
+    $('.neighborhood-picker').change(function () {
             var neighborhood = $(this).val();
             var sql;
             if (neighborhood === 'all') {
@@ -62,8 +62,19 @@
              sql = "SELECT * FROM listings WHERE neighborhood = '" + neighborhood + "'";
             }
           dataLayer.setSQL(sql);
-        });
-      });
+                });
+            });
+            
+    $(document).ready(function () {
+        var url = 'https://thawj529.cartodb.com/api/v2/sql?' + $.param({
+            q: 'SELECT AVG(price) FROM listings'
+            });
+        $.getJSON(url)
+         .done(function (data) {
+      $('.average').text(data.rows[0].avg);
+    });
+});   
+            
         </script>
     
     </head>
@@ -105,8 +116,13 @@
         <option value="West Village">West Village</option>
     </select>
 </form>
+        <p> Average Citywide Price: </p>
+        <div class="number">$ <span class="average"></span></div>
         <p>
-        Total Number of Rooms Available
+        <p> Average Neighborhood Price: </p>
+        <div class="number">$ <span class="avg_hood"></span></div>
+        <p>
+        Total Number of Rooms Available:
         </p>
             <ul>
                 <li>entire home/apt: <div class="number">19,267</div></li>
